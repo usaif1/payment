@@ -6,9 +6,67 @@ import { makeStyles } from "@material-ui/core/"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 
 //imports
+import EnterCardDetails from "./EnterCardDetails"
 
-const OfferCard = ({ offer, handleChange, state }) => {
+const OfferCard = ({
+  offer,
+  handleChange,
+  openDrawer,
+  closeDrawer,
+  openBuyOptions,
+}) => {
   const classes = useStyle()
+
+  const buyNow = () => {
+    switch (offer.value) {
+      case "amazonPay":
+      case "mobikwik":
+      case "phonePe":
+      case "cod":
+        return (
+          <button
+            className={
+              offer.stateValue.value === offer.value
+                ? classes.btnVisible
+                : classes.hidden
+            }
+          >
+            Place Order & Pay
+          </button>
+        )
+
+      case "upi":
+        return (
+          <div
+            className={
+              offer.stateValue.openBuyOptions ? classes.visible : classes.hidden
+            }
+          >
+            <input
+              type="text"
+              placeholder="e.g. XXXXXXXX99@paytm.com"
+              style={{ padding: "1em" }}
+            />
+            <button>Pay Now</button>
+          </div>
+        )
+
+      default:
+        return null
+    }
+  }
+
+  const onClickHandler = () => {
+    switch (offer.value) {
+      case "creditCard":
+        return openDrawer()
+
+      case "upi":
+        return openBuyOptions()
+      default:
+        return alert("Life sucks")
+    }
+  }
 
   return (
     <React.Fragment>
@@ -39,15 +97,14 @@ const OfferCard = ({ offer, handleChange, state }) => {
           <div>
             <p>{offer.title}</p>
             <p>{offer.details}</p>
-            <button
-              className={
-                offer.stateValue.value === offer.value
-                  ? classes.visible
-                  : classes.hidden
-              }
-            >
-              Place Order & Pay
-            </button>
+            {offer.logo ? (
+              <img
+                src={offer.logo}
+                style={{ width: "15em", height: "4em", display: "block" }}
+                alt="logo"
+              />
+            ) : null}
+            {buyNow()}
           </div>
           {offer.radioBtn ? (
             <Radio
@@ -57,17 +114,27 @@ const OfferCard = ({ offer, handleChange, state }) => {
               checked={offer.stateValue.value === offer.value}
             />
           ) : (
-            <ChevronRightIcon onClick={offer.open} fontSize="large" />
+            <ChevronRightIcon
+              // onClick={
+              //   offer.value !== "upi" || offer.value !== "netBanking"
+              //     ? openDrawer
+              //     : alert("life sux")
+              // }
+              onClick={onClickHandler}
+              fontSize="large"
+            />
           )}
         </div>
       </div>
       <Drawer
         open={offer.stateValue.openDrawer}
+        // open={true}
         anchor="right"
-        ModalProps={{ onBackdropClick: offer.open }}
-        classes={{ root: classes.root }}
+        ModalProps={{ onBackdropClick: closeDrawer }}
+        classes={{ paper: classes.paper }}
       >
-        Hi i'm the drawer component
+        <EnterCardDetails />
+        <button onClick={closeDrawer}>close me</button>
       </Drawer>
     </React.Fragment>
   )
@@ -77,10 +144,10 @@ export default OfferCard
 
 const useStyle = makeStyles((theme) => ({
   hidden: {
-    visibility: "hidden",
+    display: "none",
   },
-  visible: {
-    visibility: "visible",
+  btnVisible: {
+    visibility: "inherit",
     padding: "0.5em",
     fontSize: "1.2em",
     border: "none",
@@ -89,5 +156,23 @@ const useStyle = makeStyles((theme) => ({
     color: "white",
     fontWeight: "500",
     marginBottom: "0.5em",
+  },
+  btnPayNow: {
+    visibility: "inherit",
+    padding: "0.5em",
+    fontSize: "1.2em",
+    border: "none",
+    borderRadius: "8px",
+    background: "#006D36",
+    color: "white",
+    fontWeight: "500",
+    marginBottom: "0.5em",
+  },
+  paper: {
+    width: "30%",
+  },
+  visible: {
+    visibility: "visible",
+    // border: "1px solid red",
   },
 }))

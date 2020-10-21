@@ -8,23 +8,42 @@ import mobikwik from "../../assets/mobikwik.jpg"
 import phonePe from "../../assets/phonePe.png"
 import creditCard from "../../assets/creditCard.png"
 
+import upi from "../../assets/upiLogo.png"
+import upiLogo from "../../assets/upi.PNG"
+
 const Offers = () => {
   const [state, setState] = useState({
-    value: false,
+    value: null,
     openDrawer: false,
+    openBuyOptions: false,
   })
 
   const handleChange = (e) => {
-    setState({ value: e.target.value })
+    setState({ ...state, value: e.target.value, openBuyOptions: false })
     // alert(e.target.value)
   }
 
-  const toggleDrawer = (e) => {
-    setState((prevState) => ({
-      ...state,
-      openDrawer: !prevState.openDrawer,
+  const openDrawer = (e) => {
+    setState({
+      openDrawer: true,
       value: false,
-    }))
+      openBuyOptions: false,
+    })
+  }
+
+  const closeDrawer = (e) => {
+    setState({
+      openDrawer: false,
+      value: false,
+      openBuyOptions: false,
+    })
+  }
+
+  const showBuyOptions = (e) => {
+    setState({
+      ...state,
+      openBuyOptions: true,
+    })
   }
 
   const offers = [
@@ -38,6 +57,7 @@ const Offers = () => {
       stateValue: state,
       radioBtn: true,
     },
+
     {
       id: 2,
       title: "Mobikwik",
@@ -48,8 +68,9 @@ const Offers = () => {
       stateValue: state,
       radioBtn: true,
     },
+
     {
-      id: 4,
+      id: 3,
       title: "PhonePe",
       img: phonePe,
       details:
@@ -59,8 +80,9 @@ const Offers = () => {
       stateValue: state,
       radioBtn: true,
     },
+
     {
-      id: 3,
+      id: 4,
       title: "Credit/ Debit Card",
       img: creditCard,
       details:
@@ -69,7 +91,65 @@ const Offers = () => {
       name: "radBtn",
       stateValue: state,
       radioBtn: false,
-      open: toggleDrawer,
+    },
+  ]
+
+  const otherOptions = [
+    {
+      id: 1,
+      title: "UPI",
+      img: upi,
+      details: "Get min 30% off...",
+      value: "upi",
+      name: "radBtn",
+      stateValue: state,
+      radioBtn: false,
+      logo: upiLogo,
+    },
+
+    {
+      id: 2,
+      title: "Wallets",
+      img: null,
+      details: "",
+      value: "wallets",
+      name: "radBtn",
+      stateValue: state,
+      radioBtn: false,
+    },
+
+    {
+      id: 3,
+      title: "Net Banking",
+      img: phonePe,
+      details: "We support upto 1000 banks",
+      value: "netBanking",
+      name: "radBtn",
+      stateValue: state,
+      radioBtn: false,
+    },
+
+    {
+      id: 4,
+      title: "Credit/ Debit Card",
+      img: creditCard,
+      details:
+        "Get up to ₹300 off on a minimum transaction of Rs. 1500 on Axis Credit and Debit Cards. T&C apply",
+      value: "creditCard",
+      name: "radBtn",
+      stateValue: state,
+      radioBtn: false,
+    },
+
+    {
+      id: 5,
+      title: "Cash On Delivery",
+      img: phonePe,
+      details: "Pay via cash",
+      value: "cod",
+      name: "radBtn",
+      stateValue: state,
+      radioBtn: true,
     },
   ]
 
@@ -94,16 +174,32 @@ const Offers = () => {
                   key={offer.id}
                   offer={offer}
                   handleChange={handleChange}
-                  // checked={e.target.value === offer.value ? true : false}
-                  state={state.value}
+                  openDrawer={openDrawer}
+                  closeDrawer={closeDrawer}
                 />
               )
             })}
           </div>
-          <h2>Other Options</h2>
         </div>
         <div>
           <h2>Price Breakdown</h2>
+        </div>
+      </div>
+      <div style={{ width: "70%", margin: "auto" }}>
+        <h2>Other Options</h2>
+        <div className="offerCardsContainer">
+          {otherOptions.map((offer) => {
+            return (
+              <OfferCard
+                key={offer.id}
+                offer={offer}
+                handleChange={handleChange}
+                openDrawer={openDrawer}
+                closeDrawer={closeDrawer}
+                openBuyOptions={showBuyOptions}
+              />
+            )
+          })}
         </div>
       </div>
     </div>
